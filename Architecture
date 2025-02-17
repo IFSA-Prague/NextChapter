@@ -1,8 +1,4 @@
-The main arch components \- backed / fronted / database.  
-I would also like to see some API specified if you are using any \+  
-reasons why you choose this / that. Programming language also kind of  
-relates to architecture choice so specify it as well. Any libraries  
-being used should be there as well.
+
 
 **Architecture/ Tech Stack**   
 Frontend: 
