@@ -1,6 +1,6 @@
 # NextChapter
 
-**Members:** Sanjana Yadav, Vienna Parnell, Vivian Park  
+**Members:** Sanjana Yadav, Vienna Parnell, & Vivian Park  
 
 **Goal:**  
 To create a social media platform that encourages book completion, helps readers discover books worth their time and money, and fosters a vibrant reading community through book-club-style discussions.
@@ -8,13 +8,70 @@ To create a social media platform that encourages book completion, helps readers
 **Description:**  
 NextChapter is a social media platform designed for readers to track their progress, engage in meaningful discussions, and discover books tailored to their interests. By integrating book completion incentives, personalized recommendations, and interactive book club features, NextChapter builds a community-driven space where readers can connect, share insights, and stay motivated to finish their next great read.
 
-## Target Group
+## Installation & Running Guide
+
+This guide will walk you through setting up and running the app locally from GitHub.
+
+### Prerequisites
+
+- **Node.js** (version 14.x or 16.x)
+- **npm** or **Yarn** (package managers)
+- **Expo CLI** (Global installation)
+
+If you don't have these installed, follow the respective installation guides before proceeding.
+
+---
+
+### 1. Clone the Repository
+
+Clone the repository to your local machine by running:
+
+```bash
+git clone https://github.com/IFSA-Prague/NextChapter.git
+```
+
+Navigate to the project directory:
+```bash
+cd NextChapter
+```
+
+### 2. Install dependencies
+
+Once inside the project directory, install the required dependencies by running:
+
+```bash
+npm install
+```
+
+### 3. Install Expo CLI
+
+```bash
+npm install -g expo-cli
+```
+
+### 4. Start the development server
+
+```bash
+npx expo start
+```
+
+To run the app, follow the instructions in the terminal. For example...
+
+- Click the localhost url to view the app on your web browser.
+
+- To run the app on your phone, scan the QR code. You need to have Expo Go installed on your phone.
+
+- To run the app in a iOS emulator on your computer, you need to have installed Xcode.
+
+## Additional Details 
+
+### Target Group
 Our target audience includes both avid and occasional readers who are active on social media, primarily ranging from late teens to early thirties. We aim to engage those who aspire to make reading a hobby but struggle to do so consistently on their own.
 
-## Value Proposition
+### Value Proposition
 NextChapter enhances the reading experience by combining social engagement with personalized book discovery. It provides structured accountability through book clubs and discussion groups, motivating readers to complete books while fostering a sense of community. Unlike traditional platforms that focus solely on reviews or recommendations, NextChapter integrates interactive features that support engagement throughout the reading journey.
 
-## Problem Description
+### Problem Description
 Many people want to read more but struggle with motivation, pacing, and finding the right books. While social media plays a significant role in book discovery, it often lacks a structured way to encourage book completion. Readers frequently lack a community that shares their reading speed or taste, making discussions difficult. Additionally, fear of spoilers discourages engagement during the reading process.
 
 ## Tech Stack
