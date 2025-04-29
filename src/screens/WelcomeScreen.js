@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 export default function WelcomeScreen({ navigation }) {
   return (
     <View className="flex-1 justify-center items-center bg-white px-6">
-      <Text className="text-4xl font-bold text-blue-700 mb-12">Welcome to NextChapter</Text>
+      <Text className="text-4xl font-bold text-purple-700 mb-12">NextChapter</Text>
 
       <TouchableOpacity
         className="w-full bg-blue-600 py-3 rounded-xl mb-4"
