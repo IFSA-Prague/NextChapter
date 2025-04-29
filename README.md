@@ -43,6 +43,12 @@ Once inside the project directory, install the required dependencies by running:
 npm install
 ```
 
+HOWEVER, we need to downgrade tailwindcss to an older version to run the app in Expo Go correctly.
+
+```bash
+npm install tailwindcss@3.3.2 --save-dev
+```
+
 ### 3. Install Expo CLI
 
 ```bash

@@ -1,53 +1,23 @@
-// screens/WelcomeScreen.js
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 export default function WelcomeScreen({ navigation }) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>NextChapter</Text> 
+    <View className="flex-1 justify-center items-center bg-white px-6">
+      <Text className="text-4xl font-bold text-blue-700 mb-12">Welcome to NextChapter</Text>
 
       <TouchableOpacity
-        style={styles.button}
+        className="w-full bg-blue-600 py-3 rounded-xl mb-4"
         onPress={() => navigation.navigate('SignUp')}
       >
-        <Text style={styles.buttonText}>Sign Up</Text>
+        <Text className="text-white text-center text-lg font-semibold">Sign Up</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.button}
+        className="w-full border border-blue-600 py-3 rounded-xl"
         onPress={() => navigation.navigate('Login')}
       >
-        <Text style={styles.buttonText}>Log In</Text>
+        <Text className="text-blue-600 text-center text-lg font-semibold">Log In</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FAF3E0',
-    padding: 20,
-  },
-  title: {
-    fontFamily: 'Times New Roman',
-    fontSize: 40,
-    marginBottom: 40,
-    fontWeight: 'bold',
-  },
-  button: {
-    width: '80%',
-    backgroundColor: '#013220',
-    padding: 15,
-    borderRadius: 10,
-    marginVertical: 10,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FAF3E0',
-    fontSize: 18,
-  },
-});
