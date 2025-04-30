@@ -1,23 +1,58 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function WelcomeScreen({ navigation }) {
+export default function WelcomeScreen() {
   return (
-    <View className="flex-1 justify-center items-center bg-white px-6">
-      <Text className="text-4xl font-bold text-purple-700 mb-12">NextChapter</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>NextChapter</Text>
 
-      <TouchableOpacity
-        className="w-full bg-blue-600 py-3 rounded-xl mb-4"
-        onPress={() => navigation.navigate('SignUp')}
-      >
-        <Text className="text-white text-center text-lg font-semibold">Sign Up</Text>
+      {/* Sign Up Button with dark green background */}
+      <TouchableOpacity style={styles.button1} onPress={() => console.log('Sign Up Pressed')}>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        className="w-full border border-blue-600 py-3 rounded-xl"
-        onPress={() => navigation.navigate('Login')}
-      >
-        <Text className="text-blue-600 text-center text-lg font-semibold">Log In</Text>
+      {/* Log In Button with dark green text and outline */}
+      <TouchableOpacity style={styles.button2} onPress={() => console.log('Log In Pressed')}>
+        <Text style={styles.buttonText}>Log In</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F1F0EB',
+  },
+  title: {
+    fontFamily: 'BentonMod-Bold',
+    fontSize: 50,
+    color: '#000',
+    marginBottom: 20,
+  },
+  button1: {
+    backgroundColor: '#013220', // Dark Green background
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    marginBottom: 20,
+    width: '75%',
+    alignItems: 'center',
+  },
+  button2: {
+    borderColor: '#013220', // Dark Green border
+    borderWidth: 2,
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    width: '75%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#013220', // Dark Green text for the Log In button
+    fontSize: 18,
+    fontFamily: 'BentonMod-Bold',
+  },
+});
