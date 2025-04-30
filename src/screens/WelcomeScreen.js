@@ -1,23 +1,29 @@
 import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>NextChapter</Text>
 
-      {/* Sign Up Button with dark green background */}
-      <TouchableOpacity style={styles.button1} onPress={() => console.log('Sign Up Pressed')}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+      <TouchableOpacity
+        style={styles.button1}
+        onPress={() => navigation.navigate('SignUp')}
+      >
+        <Text style={styles.button1text}>Sign Up</Text>
       </TouchableOpacity>
 
-      {/* Log In Button with dark green text and outline */}
-      <TouchableOpacity style={styles.button2} onPress={() => console.log('Log In Pressed')}>
-        <Text style={styles.buttonText}>Log In</Text>
+      <TouchableOpacity
+        style={styles.button2}
+        onPress={() => navigation.navigate('LogIn')}
+      >
+        <Text style={styles.button2text}>Log In</Text>
       </TouchableOpacity>
+
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -33,26 +39,30 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button1: {
-    backgroundColor: '#013220', // Dark Green background
+    backgroundColor: 'black',
     borderRadius: 10,
     paddingVertical: 12,
     paddingHorizontal: 40,
-    marginBottom: 20,
-    width: '75%',
+    marginBottom: 12,
+    width: '60%',
     alignItems: 'center',
   },
+  button1text: {
+    color: 'white',
+    fontSize: 20,
+    fontFamily: 'BentonMod-Bold',
+  },
   button2: {
-    borderColor: '#013220', // Dark Green border
+    borderColor: '#013220',
     borderWidth: 2,
     borderRadius: 10,
     paddingVertical: 12,
     paddingHorizontal: 40,
-    width: '75%',
+    width: '60%',
     alignItems: 'center',
   },
-  buttonText: {
-    color: '#013220', // Dark Green text for the Log In button
-    fontSize: 18,
+  button2text: {
+    fontSize: 20,
     fontFamily: 'BentonMod-Bold',
   },
 });

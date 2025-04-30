@@ -1,59 +1,87 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import { Button, TextInput, Text } from 'react-native-paper'; // Import Paper components
-import { addDoc, collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firestore';
+import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { db } from '../../firestore'; // Import your Firebase configuration
+import { getDocs, query, where, collection } from 'firebase/firestore'; // Import Firestore methods
 
 const userCollection = collection(db, "users");
 
-export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+export default function LoginScreen({ navigation }) {
+  // State for username and password
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const addUser = async () => {
+  // Check if the user exists in Firestore
+  const handleLogin = async () => {
     try {
-      const docRef = await addDoc(userCollection, {
-        name: "Vienna",
-        email: email,
-      });
-      console.log("User added with ID:", docRef.id);
-    } catch (e) {
-      console.error("Error adding user:", e);
-    }
-  };
+      const q = query(userCollection, where("username", "==", username));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        Alert.alert('Error', 'No user found with this username');
+        return;
+      }
 
-  const fetchUsers = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'users'));
       querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} =>`, doc.data());
+        const user = doc.data();
+        if (user.password === password) {
+          // Navigate to the next screen if login is successful
+          Alert.alert('Success', 'Logged in successfully');
+          navigation.navigate('Feed');
+        } else {
+          Alert.alert('Error', 'Incorrect password');
+        }
       });
-    } catch (e) {
-      console.error('Error fetching users:', e);
+    } catch (error) {
+      console.error('Error logging in:', error);
+      Alert.alert('Error', 'Something went wrong. Please try again.');
     }
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20, backgroundColor: '#f1f0eb' }}>
+    <View style={styles.container}>
       <TextInput
-        label="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={{ marginBottom: 10, width: '100%' }}
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
       />
       <TextInput
-        label="Password"
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
-        style={{ marginBottom: 20, width: '100%' }}
       />
-      <Button mode="contained" onPress={addUser} style={{ marginBottom: 10, width: '100%' }}>
-        Add User
-      </Button>
-      <Button mode="outlined" onPress={fetchUsers} style={{ width: '100%' }}>
-        Fetch Users
-      </Button>
+
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={{ color: 'white'}}>Log In</Text>
+      </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    marginBottom: 30,
+    backgroundColor: '#f1f0eb', // Light background color
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#ddd',
+  },
+  button: {
+    backgroundColor: 'black',
+    padding: 10,
+    borderRadius: 5,
+    width: '60%',
+    height: 40,
+    alignItems: 'center',
+  }
+});
