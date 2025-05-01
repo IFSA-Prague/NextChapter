@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
+import { useAuth
 
+ } from '../../AuthProvider';
 export default function FeedScreen({ navigation }) {
+  const { user } = useAuth();
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>

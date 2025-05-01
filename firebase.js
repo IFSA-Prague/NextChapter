@@ -1,8 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';  // Required for persistence
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeAuth, getReactNativePersistence, getAuth } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAs2QiIbe6XI9mCTfaeUbI7QcA8-2mNidI",
   authDomain: "next-chapter-react.firebaseapp.com",
@@ -14,12 +13,20 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-// Initialize Firebase Authentication with persistence
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-});
+// Initialize Auth
+const auth = getAuth(app);
 
-// Export the initialized app and auth
+// If this is a fresh installation, set persistence
+if (!getApps().length) {
+  try {
+    initializeAuth(app, {
+      persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+    });
+  } catch (error) {
+    console.log("Error setting auth persistence: " + error);
+  }
+}
+
 export { app, auth };

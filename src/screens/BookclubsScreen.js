@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { useAuth } from '../../AuthProvider';
 
 const db = getFirestore();
 
 export default function BookclubsScreen({ navigation }) {
+  const { user } = useAuth(); // retrieving the current user
   const [bookclubs, setBookclubs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,6 +18,10 @@ export default function BookclubsScreen({ navigation }) {
 
         for (const bookclubDoc of bookclubsSnapshot.docs) {
           const bookclubData = bookclubDoc.data();
+          // Check if the user is a member of the bookclub
+          const isMember = bookclubData.members && bookclubData.members.includes(user.uid);
+          if (!isMember) continue; // Skip if the user is not a member
+          
           let currentBookTitle = 'No book selected';
 
           // Resolve currentBook ID to actual book title
@@ -62,7 +68,7 @@ export default function BookclubsScreen({ navigation }) {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6200ee" />
+        <ActivityIndicator size="large" color="#000000" />
       </View>
     );
   }

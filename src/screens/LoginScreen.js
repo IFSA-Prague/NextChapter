@@ -1,38 +1,26 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { db } from '../../firestore'; // Import your Firebase configuration
-import { getDocs, query, where, collection } from 'firebase/firestore'; // Import Firestore methods
-
-const userCollection = collection(db, "users");
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase';
 
 export default function LoginScreen({ navigation }) {
-  // State for username and password
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // Check if the user exists in Firestore
   const handleLogin = async () => {
     try {
-      const q = query(userCollection, where("username", "==", username));
-      const querySnapshot = await getDocs(q);
-      if (querySnapshot.empty) {
-        Alert.alert('Error', 'No user found with this username');
-        return;
-      }
-
-      querySnapshot.forEach((doc) => {
-        const user = doc.data();
-        if (user.password === password) {
-          // Navigate to the next screen if login is successful
-          Alert.alert('Success', 'Logged in successfully');
-          navigation.navigate('Feed');
-        } else {
-          Alert.alert('Error', 'Incorrect password');
-        }
-      });
+      await signInWithEmailAndPassword(auth, email, password);
+      Alert.alert('Success', 'Logged in successfully');
+      navigation.navigate('Feed');
     } catch (error) {
-      console.error('Error logging in:', error);
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      console.error('Login error:', error.message);
+      if (error.code === 'auth/user-not-found') {
+        Alert.alert('Error', 'No account found with this email');
+      } else if (error.code === 'auth/wrong-password') {
+        Alert.alert('Error', 'Incorrect password');
+      } else {
+        Alert.alert('Error', 'Login failed. Please try again.');
+      }
     }
   };
 
@@ -40,9 +28,10 @@ export default function LoginScreen({ navigation }) {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Email"
+        autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}
@@ -51,9 +40,8 @@ export default function LoginScreen({ navigation }) {
         value={password}
         onChangeText={setPassword}
       />
-
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={{ color: 'white'}}>Log In</Text>
+        <Text style={{ color: 'white' }}>Log In</Text>
       </TouchableOpacity>
     </View>
   );
@@ -66,7 +54,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     marginBottom: 30,
-    backgroundColor: '#f1f0eb', // Light background color
+    backgroundColor: '#f1f0eb',
   },
   input: {
     width: '100%',
@@ -83,5 +71,6 @@ const styles = StyleSheet.create({
     width: '60%',
     height: 40,
     alignItems: 'center',
-  }
+    justifyContent: 'center',
+  },
 });

@@ -9,9 +9,8 @@ export default function BookclubHomeScreen({ route, navigation }) {
     const [bookClub, setBookClub] = useState(null);
     const [bookData, setBookData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { bookClubId } = route.params || { bookClubId: null };
+    const { bookClubId } = route.params || { bookClubId: null }; // if no bookClubId is passed, set it to null
     const [selectedDiscussion, setSelectedDiscussion] = useState('');
-
 
     useEffect(() => {
         const fetchBookClubDetails = async () => {

@@ -1,45 +1,57 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { db } from '../../firestore.js';
-import { addDoc, collection } from 'firebase/firestore';
 
-const userCollection = collection(db, 'users');
+import { db } from '../../firestore.js';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+
+import { auth } from '../../firebase.js';
+
 
 export default function SignUpScreen({ navigation }) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // Add: first name, last name, confirm password
-
+  
   const handleSignUp = async () => {
-    if (!username || !password) {
-      Alert.alert('Error', 'Please enter both username and password');
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password');
       return;
     }
   
     try {
-      const newUserRef = await addDoc(userCollection, {
-        username,
-        password,
+      console.log("Attempting to create user with:", email);
+      // Debug auth object to see if it's properly initialized
+      console.log("Auth object:", auth);
+      
+      // 1. sign up with Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+  
+      // 2. store additional user info in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        email,
+        createdAt: new Date(),
       });
   
-      console.log('User added:', newUserRef.id);
+      console.log('User signed up and data stored in Firestore:', user.uid);
       Alert.alert('Success', 'Account created!');
-      navigation.navigate('Onboarding'); // 👈 Immediately go to Onboarding after sign-up
+      navigation.navigate('Onboarding');
     } catch (error) {
-      console.error('Error adding user:', error);
-      Alert.alert('Error', 'Failed to create account. Please try again.');
+      console.error('Error during sign-up:', error.code, error.message);
+      Alert.alert('Error', error.message);
     }
   };
-  
 
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Username"
+        placeholder="Email"
         placeholderTextColor="#888"
-        value={username}
-        onChangeText={setUsername}
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
@@ -48,6 +60,7 @@ export default function SignUpScreen({ navigation }) {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        autoCapitalize="none"
       />
       <TouchableOpacity style={styles.button} onPress={handleSignUp}>
         <Text style={styles.buttonText}>Sign Up</Text>
@@ -56,7 +69,6 @@ export default function SignUpScreen({ navigation }) {
   );
 }
 
-// Styles (consistent with your previous aesthetic)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
