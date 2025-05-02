@@ -2,38 +2,44 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 
 import { db } from '../../firestore.js';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 
 import { auth } from '../../firebase.js';
 
-
 export default function SignUpScreen({ navigation }) {
+  const [firstName, setFirstName] = useState(' ');
+  const [lastName, setLastName] = useState(' ');
+  const [displayName, setDisplayName] = useState('');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // to do: set up email confirmation
   
   const handleSignUp = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please enter both email and password');
+    if (!email || !password || !firstName || !lastName || !displayName) {
+      Alert.alert('Error', 'Please complete all fields.');
       return;
     }
   
     try {
-      console.log("Attempting to create user with:", email);
-      // Debug auth object to see if it's properly initialized
-      console.log("Auth object:", auth);
-      
-      // 1. sign up with Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
   
-      // 2. store additional user info in Firestore
+      // Update Firebase Auth profile
+      await updateProfile(user, {
+        displayName: displayName,
+      });
+  
+      // Save extra fields in Firestore
       await setDoc(doc(db, 'users', user.uid), {
         email,
         createdAt: new Date(),
+        firstName,
+        lastName,
+        displayName,
       });
   
-      console.log('User signed up and data stored in Firestore:', user.uid);
       Alert.alert('Success', 'Account created!');
       navigation.navigate('Onboarding');
     } catch (error) {
@@ -44,6 +50,30 @@ export default function SignUpScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="First Name"
+        placeholderTextColor="#888"
+        value={firstName}
+        onChangeText={setFirstName}
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        placeholderTextColor="#888"
+        value={lastName}
+        onChangeText={setLastName}
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Display Name"
+        placeholderTextColor="#888"
+        value={displayName}
+        onChangeText={setDisplayName}
+        autoCapitalize="none"
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
