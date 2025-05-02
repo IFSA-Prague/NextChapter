@@ -1,8 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
-import { useAuth
-
- } from '../../AuthProvider';
+import { useAuth } from '../../AuthProvider';
 export default function FeedScreen({ navigation }) {
   const { user } = useAuth();
 
@@ -11,12 +9,6 @@ export default function FeedScreen({ navigation }) {
       <Text style={styles.text}>
         Feed / Book Recommendation (Sanjana)
       </Text>
-
-      {/* Button that navigates to BookclubsScreen */}
-      <Button
-        title="Bookclubs"
-        onPress={() => navigation.navigate('Bookclubs')} // Navigating to BookclubsScreen
-      />
     </View>
   );
 }

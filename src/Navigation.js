@@ -1,26 +1,24 @@
-// Navigation.js
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import WelcomeScreen from './screens/WelcomeScreen';
-import LoginScreen from './screens/LoginScreen';
-import SignUpScreen from './screens/SignUpScreen';
-import OnboardingScreen from './screens/OnboardingScreen';
-import FeedScreen from './screens/FeedScreen';
-import BookclubsScreen from './screens/BookclubsScreen';
-import BookclubHomeScreen from './screens/BookclubHomeScreen';
-
-const Stack = createNativeStackNavigator();
+import { NavigationContainer } from '@react-navigation/native';
+import { useAuth } from '../AuthProvider'; // Import your AuthContext hook
+import AuthNavigator from './AuthNavigator'; // Login/SignUp/Onboarding stack
+import BottomTabNavigator from './BottomTabNavigator'; // Main app with bottom tabs
+import { ActivityIndicator, View } from 'react-native';
 
 export default function Navigation() {
+  const { user, initializing } = useAuth();
+
+  if (initializing) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
-    <Stack.Navigator initialRouteName="Welcome">
-      <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="SignUp" component={SignUpScreen} />
-      <Stack.Screen name="LogIn" component={LoginScreen} />
-      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-      <Stack.Screen name="Feed" component={FeedScreen} />
-      <Stack.Screen name="Bookclubs" component={BookclubsScreen} />
-      <Stack.Screen name="BookclubHome" component={BookclubHomeScreen} />
-    </Stack.Navigator>
+    <NavigationContainer>
+      {user ? <BottomTabNavigator /> : <AuthNavigator />}
+    </NavigationContainer>
   );
 }
