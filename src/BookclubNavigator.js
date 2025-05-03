@@ -1,14 +1,23 @@
 // BookclubNavigator.js
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import BookclubHomeScreen from './screens/BookclubHomeScreen'; // Make sure this path is correct
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import BookclubsScreen from './screens/BookclubsScreen';
+import BookclubHomeScreen from './screens/BookclubHomeScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function BookclubNavigator() {
   return (
-    <Stack.Navigator initialRouteName="BookclubHome">
-      <Stack.Screen name="BookclubHome" component={BookclubHomeScreen} />
+    <Stack.Navigator>
+      <Stack.Screen
+        name="BookclubsScreen"
+        component={BookclubsScreen}
+      />
+      <Stack.Screen
+        name="BookclubHome"
+        component={BookclubHomeScreen}
+        options={{ title: 'Bookclub Home' }}
+      />
     </Stack.Navigator>
   );
 }
