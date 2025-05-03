@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { onAuthStateChanged } from 'firebase/auth';
-import { useAuth } from '../../AuthProvider';
+import { useAuth } from '../../../AuthProvider';
 
 export default function OnboardingScreen({ navigation }) {
   const { user } = useAuth(); // this is how you access the user from AuthProvider

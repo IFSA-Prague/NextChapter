@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 
-import { db } from '../../firestore.js';
+import { db } from '../../../firestore.js';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 
-import { auth } from '../../firebase.js';
+import { auth } from '../../../firebase.js';
 
 export default function SignUpScreen({ navigation }) {
   const [firstName, setFirstName] = useState(' ');

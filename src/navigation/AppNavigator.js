@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { useAuth } from '../AuthProvider'; // Import your AuthContext hook
+import { useAuth } from '../../AuthProvider'; // Import your AuthContext hook
 import AuthNavigator from './AuthNavigator'; // Login/SignUp/Onboarding stack
 import BottomTabNavigator from './BottomTabNavigator'; // Main app with bottom tabs
 import { ActivityIndicator, View } from 'react-native';
 
-export default function Navigation() {
+export default function AppNavigator() {
   const { user, initializing } = useAuth();
 
   if (initializing) {

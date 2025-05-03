@@ -1,9 +1,8 @@
 import React from 'react';
 import { useFonts } from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
-import Navigation from './Navigation';
+import AppNavigator from './navigation/AppNavigator';
 import { AuthProvider } from '../AuthProvider';
-
 export default function App() {
   const [fontsLoaded] = useFonts({
     'BentonMod-Regular': require('./assets/fonts/BentonMod-Regular.otf'),
@@ -15,7 +14,7 @@ export default function App() {
 
   return (
     <AuthProvider>
-        <Navigation />
+        <AppNavigator />
     </AuthProvider>
   );
 }

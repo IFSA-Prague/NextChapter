@@ -1,12 +1,11 @@
-// BookclubNavigator.js
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import BookclubsScreen from './screens/BookclubsScreen';
-import BookclubHomeScreen from './screens/BookclubHomeScreen';
+import BookclubsScreen from '../screens/Bookclubs/BookclubsScreen';
+import BookclubHomeScreen from '../screens/Bookclubs/BookclubHomeScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function BookclubNavigator() {
+export default function BookclubsStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen

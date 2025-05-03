@@ -1,13 +1,13 @@
 // Navigation.js
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import WelcomeScreen from './screens/WelcomeScreen';
-import LoginScreen from './screens/LoginScreen';
-import SignUpScreen from './screens/SignUpScreen';
-import OnboardingScreen from './screens/OnboardingScreen';
-import FeedScreen from './screens/FeedScreen';
-import BookclubsScreen from './screens/BookclubsScreen';
-import BookclubHomeScreen from './screens/BookclubHomeScreen';
+import WelcomeScreen from '../screens/Auth/WelcomeScreen';
+import LoginScreen from '../screens/Auth/LoginScreen';
+import SignUpScreen from '../screens/Auth/SignUpScreen';
+import OnboardingScreen from '../screens/Onboarding/OnboardingScreen';
+import FeedScreen from '../screens/Feed/FeedScreen';
+import BookclubsScreen from '../screens/Bookclubs/BookclubsScreen';
+import BookclubHomeScreen from '../screens/Bookclubs/BookclubHomeScreen';
 
 const Stack = createNativeStackNavigator();
 
