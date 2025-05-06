@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import {KeyboardAvoidingView, Platform, ScrollView, TouchableWithoutFeedback, View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, Keyboard } from 'react-native';
 
 import { db } from '../../../firestore.js';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
@@ -8,8 +8,8 @@ import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { auth } from '../../../firebase.js';
 
 export default function SignUpScreen({ navigation }) {
-  const [firstName, setFirstName] = useState(' ');
-  const [lastName, setLastName] = useState(' ');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [displayName, setDisplayName] = useState('');
 
   const [email, setEmail] = useState('');
@@ -49,54 +49,65 @@ export default function SignUpScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        placeholderTextColor="#888"
-        value={firstName}
-        onChangeText={setFirstName}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        placeholderTextColor="#888"
-        value={lastName}
-        onChangeText={setLastName}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Display Name"
-        placeholderTextColor="#888"
-        value={displayName}
-        onChangeText={setDisplayName}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#888"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#888"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        autoCapitalize="none"
-      />
-      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={styles.container}>
+            <TextInput
+              style={styles.input}
+              placeholder="First Name"
+              placeholderTextColor="#888"
+              value={firstName}
+              onChangeText={setFirstName}
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Last Name"
+              placeholderTextColor="#888"
+              value={lastName}
+              onChangeText={setLastName}
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Display Name"
+              placeholderTextColor="#888"
+              value={displayName}
+              onChangeText={setDisplayName}
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#888"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="#888"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+              <Text style={styles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
+
 }
 
 const styles = StyleSheet.create({
