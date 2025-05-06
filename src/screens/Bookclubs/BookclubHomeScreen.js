@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { Picker } from '@react-native-picker/picker';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const db = getFirestore();
 
@@ -10,8 +11,22 @@ export default function BookclubHomeScreen({ route, navigation }) {
     const [bookData, setBookData] = useState(null);
     const [loading, setLoading] = useState(true);
     const { bookClubId } = route.params || { bookClubId: null }; // if no bookClubId is passed, set it to null
-    const [selectedDiscussion, setSelectedDiscussion] = useState('');
+    
+    // State for chapter selection
+    const [chapterOpen, setChapterOpen] = useState(false);
+    const [selectedChapter, setSelectedChapter] = useState(null);
+    const [chapterItems, setChapterItems] = useState([]);
 
+    useEffect(() => {
+        if (bookData?.numChapters) {
+          const chapters = Array.from({ length: bookData.numChapters }, (_, i) => ({
+            label: `Chapter ${i + 1}`,
+            value: `chapter${i + 1}`,
+          }));
+          setChapterItems(chapters);
+        }
+      }, [bookData]);
+    
     useEffect(() => {
         const fetchBookClubDetails = async () => {
             if (!bookClubId) {
@@ -33,10 +48,9 @@ export default function BookclubHomeScreen({ route, navigation }) {
                         const bookDoc = await getDoc(bookRef);
 
                         if (bookDoc.exists()) {
-                            setBookData(bookDoc.data());
-                        } else {
-                            console.log("Book not found with ID:", data.currentBook);
+                            setBookData({ id: bookDoc.id, ...bookDoc.data() });
                         }
+                          
                     }
                 } else {
                     console.log("No such book club!");
@@ -68,65 +82,88 @@ export default function BookclubHomeScreen({ route, navigation }) {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                {bookClub.imageUrl ? (
-                    <Image 
-                        source={{ uri: bookClub.imageUrl }} 
-                        style={styles.clubImage} 
-                    />
-                ) : (
-                    <View style={styles.placeholderImage}>
-                        <Text style={styles.placeholderText}>{bookClub.name?.charAt(0) || "B"}</Text>
-                    </View>
-                )}
-                <Text style={styles.clubName}>{bookClub.name}</Text>
-                <Text style={styles.clubDescription}>{bookClub.description}</Text>
-            </View>
-            
-            <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Current Book</Text>
-                {bookData?.title ? (
-                    <TouchableOpacity
-                        style={styles.bookContainer}
-                        onPress={() => navigation.navigate('BookDetails', { bookId: bookClub.currentBook })}
-                        activeOpacity={0.8}
-                    >
-                        <Text style={styles.bookTitle}>{bookData.title}</Text>
-                        {bookData.author && (
-                            <Text style={styles.bookAuthor}>by {bookData.author}</Text>
-                        )}
-                        {bookData.description && (
-                            <Text style={styles.bookDescription}>{bookData.description}</Text>
-                        )}
-                    </TouchableOpacity>
-                ) : (
-                    <Text style={styles.noContentText}>No book currently selected</Text>
-                )}
-            </View>
-            
-            <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle}>Members</Text>
-                <Text style={styles.memberCount}>{bookClub.members?.length || 0} members</Text>
-            </View>
-
-            <View style={styles.sectionContainer}>
-                <Text style={styles.sectionTitle} >Join Discussion</Text>
-                <Picker
-                selectedValue={selectedDiscussion}
-                onValueChange={(itemValue) => setSelectedDiscussion(itemValue)}
-                style={styles.picker}
-                >
-                <Picker.Item label="Select a topic..." value="" />
-                <Picker.Item label="Characters" value="characters" />
-                <Picker.Item label="Plot" value="plot" />
-                <Picker.Item label="Themes" value="themes" />
-                <Picker.Item label="Predictions" value="predictions" />
-                </Picker>
-            </View>
-
-        </ScrollView>
-    );
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView style={styles.container}>
+                <View style={styles.header}>
+                    {bookClub.imageUrl ? (
+                        <Image 
+                            source={{ uri: bookClub.imageUrl }} 
+                            style={styles.clubImage} 
+                        />
+                    ) : (
+                        <View style={styles.placeholderImage}>
+                            <Text style={styles.placeholderText}>{bookClub.name?.charAt(0) || "B"}</Text>
+                        </View>
+                    )}
+                    <Text style={styles.clubName}>{bookClub.name}</Text>
+                    <Text style={styles.clubDescription}>{bookClub.description}</Text>
+                </View>
+                
+                <View style={styles.sectionContainer}>
+                    <Text style={styles.sectionTitle}>Current Book</Text>
+                    {bookData?.title ? (
+                        <TouchableOpacity
+                            style={styles.bookContainer}
+                            onPress={() => navigation.navigate('BookDetails', { bookId: bookClub.currentBook })}
+                            activeOpacity={0.8}
+                        >
+                            <Text style={styles.bookTitle}>{bookData.title}</Text>
+                            {bookData.author && (
+                                <Text style={styles.bookAuthor}>by {bookData.author}</Text>
+                            )}
+                            {bookData.description && (
+                                <Text style={styles.bookDescription}>{bookData.description}</Text>
+                            )}
+                        </TouchableOpacity>
+                    ) : (
+                        <Text style={styles.noContentText}>No book currently selected</Text>
+                    )}
+                </View>
+                
+                <View style={styles.sectionContainer}>
+                    <Text style={styles.sectionTitle}>Members</Text>
+                    <Text style={styles.memberCount}>{bookClub.members?.length || 0} members</Text>
+                </View>
+        
+                <View style={styles.sectionContainer}>
+                    <Text style={styles.sectionTitle}>Join Discussion</Text>
+                    {bookData?.numChapters ? (
+                        <>
+                            <Text style={{ marginTop: 10, marginBottom: 4, fontSize: 16 }}>Select Chapter</Text>
+                            <DropDownPicker
+                                listMode="MODAL"
+                                open={chapterOpen}
+                                value={selectedChapter}
+                                items={chapterItems}
+                                setOpen={setChapterOpen}
+                                setValue={setSelectedChapter}
+                                setItems={setChapterItems}
+                                placeholder="Select a chapter..."
+                                style={styles.dropdown}
+                                dropDownContainerStyle={styles.dropdownContainer}
+                            />
+                            {selectedChapter && (
+                            <TouchableOpacity
+                                style={styles.viewDiscussionButton}
+                                onPress={() => navigation.navigate('BookclubDiscussionScreen', {
+                                bookClubId: bookClub.id,
+                                chapter: selectedChapter,
+                                bookId: bookData.id,
+                                // discussion id will be looked up or created in the next screen
+                                })}
+                                activeOpacity={0.8}
+                            >
+                                <Text style={styles.viewDiscussionText}>View Discussion</Text>
+                            </TouchableOpacity>
+                            )}
+                        </>
+                    ) : (
+                        <Text style={styles.noContentText}>Chapter info unavailable</Text>
+                    )}
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    );    
 }
 
 const styles = StyleSheet.create({
@@ -233,5 +270,25 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginBottom: 20,
     },
-      
+    dropdown: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        marginBottom: 10,
+        borderColor: '#ccc',
+    },
+    dropdownContainer: {
+        backgroundColor: '#fff',
+        borderColor: '#ccc',
+    },
+    viewDiscussionButton: {
+        backgroundColor: 'black',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignItems: 'center',
+      },
+      viewDiscussionText: {
+        color: '#fff',
+        fontSize: 16,
+      },
 });
