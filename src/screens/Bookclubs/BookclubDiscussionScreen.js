@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, TextInput, Button, FlatList, StyleSheet
+  TouchableOpacity, View, Text, TextInput, Button, FlatList, StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, Platform
 } from 'react-native';
 import {
   getFirestore, collection, query, where,
@@ -14,19 +14,17 @@ const db = getFirestore();
 export default function BookclubDiscussionScreen({ route }) {
   const { bookClubId, bookId, chapter } = route.params;
   const [discussionId, setDiscussionId] = useState(null);
-  const [comments, setComments]       = useState([]);
-  const [newComment, setNewComment]   = useState('');
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
   const auth = getAuth();
   const user = auth.currentUser;
 
   // 1️⃣ Lookup or create discussion in the single discussions subcollection
-  // 1️⃣ Lookup or create discussion under the specific book
-useEffect(() => {
-    // point at the book’s discussions subcollection
+  useEffect(() => {
     const discRef = collection(
       db,
       'bookclubs', bookClubId,
-      'books',     bookId,
+      'books', bookId,
       'discussions'
     );
     const q = query(
@@ -49,18 +47,16 @@ useEffect(() => {
   
     return unsub;
   }, [bookClubId, bookId, chapter, user.uid]);
-  
 
   // 2️⃣ Listen for comments on that discussion
   useEffect(() => {
     if (!discussionId) return;
-    // comments under book → discussions → comments
     const commentsRef = collection(
-        db,
-        'bookclubs', bookClubId,
-        'books',     bookId,
-        'discussions', discussionId,
-        'comments'
+      db,
+      'bookclubs', bookClubId,
+      'books', bookId,
+      'discussions', discussionId,
+      'comments'
     );
     
     const q = query(commentsRef, orderBy('createdAt','asc'));
@@ -88,45 +84,65 @@ useEffect(() => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>
-        Discussion – Chapter {chapter.replace(/[^\d]/g,'')}
-      </Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      >
+        <View style={styles.container}>
+          <Text style={styles.header}>
+            Discussion – Chapter {chapter.replace(/[^\d]/g,'')}
+          </Text>
 
-      {comments.length === 0
-        ? <Text style={styles.noComments}>No comments yet.</Text>
-        : <FlatList
-            data={comments}
-            keyExtractor={i=>i.id}
-            renderItem={({item})=>(
-              <Comment
-                displayName={item.displayName}
-                timestamp={item.createdAt}
-                text={item.text}
+          {comments.length === 0
+            ? <Text style={styles.noComments}>No comments yet.</Text>
+            : <FlatList
+                data={comments}
+                keyExtractor={i => i.id}
+                renderItem={({ item }) => (
+                  <Comment
+                    displayName={item.displayName}
+                    timestamp={item.createdAt}
+                    text={item.text}
+                  />
+                )}
+                contentContainerStyle={styles.commentList}
               />
-            )}
-            contentContainerStyle={styles.commentList}
-          />
-      }
+          }
 
-      <TextInput
-        style={styles.input}
-        placeholder="Write a comment…"
-        value={newComment}
-        onChangeText={setNewComment}
-      />
-      <Button title="Send" onPress={handleSend} />
-    </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Write a comment…"
+            value={newComment}
+            onChangeText={setNewComment}
+          />
+          <TouchableOpacity style = {styles.commentButton} onPress = {handleSend}>
+            <Text style = {styles.commentText}> Comment </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex:1, padding:16 },
-  header:    { fontSize:20, fontWeight:'600', marginBottom:12 },
-  noComments:{ textAlign:'center', color:'gray', marginVertical:12 },
-  commentList:{ paddingBottom:12 },
-  input:     {
-    borderWidth:1, borderColor:'#ccc', borderRadius:8,
-    padding:10, marginVertical:6
+  container: { flex: 1, padding: 16 },
+  header: { fontSize: 20, fontWeight: '600', marginBottom: 12 },
+  noComments: { textAlign: 'center', color: 'gray', marginVertical: 12 },
+  commentList: { paddingBottom: 12 },
+  input: {
+    borderWidth: 1, borderColor: '#ccc', borderRadius: 8,
+    padding: 10, marginVertical: 6
   },
+  commentButton: {
+    backgroundColor: 'black',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  commentText: {
+    color: 'white',
+  }
 });

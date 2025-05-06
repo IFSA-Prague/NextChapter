@@ -67,23 +67,23 @@ export default function BookclubHomeScreen({ route, navigation }) {
 
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
+            <SafeAreaView style={styles.loadingContainer} edges={['right', 'left']}>
                 <ActivityIndicator size="large" color="#6200ee" />
-            </View>
+            </SafeAreaView>
         );
     }
 
     if (!bookClub) {
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container} edges={['right', 'left']}>
                 <Text style={styles.errorText}>Book club not found or no ID provided.</Text>
-            </View>
+            </SafeAreaView>
         );
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView style={styles.container}>
+        <SafeAreaView style={styles.safeArea} edges={['right', 'left']} forceInset={{ top: 'never' }}>
+            <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
                 <View style={styles.header}>
                     {bookClub.imageUrl ? (
                         <Image 
@@ -100,7 +100,7 @@ export default function BookclubHomeScreen({ route, navigation }) {
                 </View>
                 
                 <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionTitle}>Current Book</Text>
+                    <Text style={styles.sectionHeading}>Current Book</Text>
                     {bookData?.title ? (
                         <TouchableOpacity
                             style={styles.bookContainer}
@@ -121,15 +121,15 @@ export default function BookclubHomeScreen({ route, navigation }) {
                 </View>
                 
                 <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionTitle}>Members</Text>
+                    <Text style={styles.sectionHeading}>Members</Text>
                     <Text style={styles.memberCount}>{bookClub.members?.length || 0} members</Text>
                 </View>
         
                 <View style={styles.sectionContainer}>
-                    <Text style={styles.sectionTitle}>Join Discussion</Text>
+                    <Text style={styles.sectionHeading}>Join Discussion</Text>
                     {bookData?.numChapters ? (
                         <>
-                            <Text style={{ marginTop: 10, marginBottom: 4, fontSize: 16 }}>Select Chapter</Text>
+                            <Text style={styles.selectChapterText}>Select Chapter</Text>
                             <DropDownPicker
                                 listMode="MODAL"
                                 open={chapterOpen}
@@ -167,9 +167,16 @@ export default function BookclubHomeScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#f1f0eb',
+    },
     container: {
         flex: 1,
         backgroundColor: '#f1f0eb',
+    },
+    contentContainer: {
+        paddingTop: 10, // Reduced from default
     },
     loadingContainer: {
         flex: 1,
@@ -179,7 +186,8 @@ const styles = StyleSheet.create({
     },
     header: {
         alignItems: 'center',
-        padding: 20,
+        padding: 15, // Reduced padding
+        paddingTop: 0, // Remove top padding specifically
         borderBottomWidth: 1,
         borderBottomColor: '#e0e0e0',
     },
@@ -187,7 +195,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
         borderRadius: 50,
-        marginBottom: 16,
+        marginBottom: 12, // Reduced margin
     },
     placeholderImage: {
         width: 100,
@@ -196,7 +204,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#6200ee',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 16,
+        marginBottom: 12, // Reduced margin
     },
     placeholderText: {
         fontSize: 36,
@@ -206,7 +214,7 @@ const styles = StyleSheet.create({
     clubName: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 8,
+        marginBottom: 6, // Reduced margin
     },
     clubDescription: {
         fontSize: 16,
@@ -218,7 +226,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#e0e0e0',
     },
-    sectionTitle: {
+    sectionHeading: { // Renamed from sectionTitle to avoid duplication
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 12,
@@ -259,16 +267,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 40,
     },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginTop: 20,
-        marginBottom: 8,
-    },
-    picker: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        marginBottom: 20,
+    selectChapterText: {
+        marginTop: 10, 
+        marginBottom: 4, 
+        fontSize: 16
     },
     dropdown: {
         backgroundColor: '#fff',
@@ -286,9 +288,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 8,
         alignItems: 'center',
-      },
-      viewDiscussionText: {
+    },
+    viewDiscussionText: {
         color: '#fff',
         fontSize: 16,
-      },
+    },
 });
