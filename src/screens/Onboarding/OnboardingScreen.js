@@ -8,13 +8,10 @@ export default function OnboardingScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>
-        Onboarding Screen (Vivian)
-      </Text>
-      <Text>
-        Hi{user.displayName ? `, ${user.displayName}` : ' Friend'}!
-      </Text>
-    </View>
+    <Text style={styles.welcomeText}>Welcome to NextChapter!</Text>
+    <Text style={styles.description}>We're excited to help you discover your next great book. To get started, we'll ask you a few quick questions to understand your interests and preferences. This will allow us to recommend the best books tailored just for you. Ready to find your next chapter? </Text>
+    <Button title="Get Started" onPress={() => navigation.navigate('Preferences')} />
+</View> 
   );
 }
 

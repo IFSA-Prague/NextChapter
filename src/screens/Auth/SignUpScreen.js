@@ -40,8 +40,9 @@ export default function SignUpScreen({ navigation }) {
         displayName,
       });
   
+      navigation.navigate('OnboardingScreen');
       Alert.alert('Success', 'Account created!');
-      navigation.navigate('Onboarding');
+
     } catch (error) {
       console.error('Error during sign-up:', error.code, error.message);
       Alert.alert('Error', error.message);

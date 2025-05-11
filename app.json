@@ -4,6 +4,7 @@
     "slug": "next-chapter",
     "version": "1.0.0",
     "orientation": "portrait",
+    "entryPoint": "./src/App.js",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
