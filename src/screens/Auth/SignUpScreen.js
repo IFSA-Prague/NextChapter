@@ -40,7 +40,7 @@ export default function SignUpScreen({ navigation }) {
         displayName,
       });
   
-      navigation.navigate('OnboardingScreen');
+      navigation.navigate('Onboarding'); // navigate to OnboardingStack component
       Alert.alert('Success', 'Account created!');
 
     } catch (error) {

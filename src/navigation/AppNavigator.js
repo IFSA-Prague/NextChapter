@@ -1,12 +1,14 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { useAuth } from '../../AuthProvider'; // Import your AuthContext hook
-import AuthNavigator from './AuthNavigator'; // Login/SignUp/Onboarding stack
-import BottomTabNavigator from './BottomTabNavigator'; // Main app with bottom tabs
 import { ActivityIndicator, View } from 'react-native';
 
+import { useAuth } from '../../AuthProvider'; // your custom auth context
+import AuthNavigator from './AuthNavigator'; // login/signup
+import BottomTabNavigator from './BottomTabNavigator'; // main app
+import OnboardingStack from './OnboardingStack'; // onboarding + preferences
+
 export default function AppNavigator() {
-  const { user, initializing } = useAuth();
+  const { user, initializing, preferencesSet } = useAuth();
 
   if (initializing) {
     return (
@@ -18,7 +20,13 @@ export default function AppNavigator() {
 
   return (
     <NavigationContainer>
-      {user ? <BottomTabNavigator /> : <AuthNavigator />}
+      {!user ? (
+        <AuthNavigator />
+      ) : !preferencesSet ? (
+        <OnboardingStack />
+      ) : (
+        <BottomTabNavigator />
+      )}
     </NavigationContainer>
   );
 }
