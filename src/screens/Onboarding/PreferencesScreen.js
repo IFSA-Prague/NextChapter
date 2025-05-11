@@ -1,41 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { onAuthStateChanged } from 'firebase/auth';
-import { useAuth } from '../../../AuthProvider';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Switch, Button } from 'react-native';
+import { useAuth } from '../../../AuthProvider'; // Access context
 
-const PreferencesScreen = ({ navigation }) => {
-    const [interests, setInterests] = useState([]);
+export default function PreferencesScreen({ navigation }) {
+  const [tech, setTech] = useState(false);
+  const [health, setHealth] = useState(false);
+  const { setPreferencesSet } = useAuth(); // Accessing setPreferencesSet from context
 
-    const handleInterestChange = (interest) => {
-        setInterests(prev => {
-            if (prev.includes(interest)) {
-                return prev.filter(i => i !== interest);
-            } else {
-                return [...prev, interest];
-            }
-        });
-    };
+  const getSelectedInterests = () => {
+    const interests = [];
+    if (tech) interests.push('Tech');
+    if (health) interests.push('Health');
+    return interests;
+  };
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.header}>What's your interest?</Text>
-            <Checkbox label="Tech" onPress={() => handleInterestChange('Tech')} />
-            <Checkbox label="Health" onPress={() => handleInterestChange('Health')} />
-            <Button title="Next" onPress={() => navigation.navigate('ProfileSetup')} />
-        </View>
-    );
-};
+  const handleNext = () => {
+    const selectedInterests = getSelectedInterests();
+    console.log('Selected interests:', selectedInterests);
+
+    // Save interests to backend or storage if needed...
+
+    // ✅ Set preferences as complete
+    setPreferencesSet(true); // Update context to mark preferences as set
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>What's your interest?</Text>
+
+      <View style={styles.switchContainer}>
+        <Text style={styles.label}>Tech</Text>
+        <Switch value={tech} onValueChange={setTech} />
+      </View>
+
+      <View style={styles.switchContainer}>
+        <Text style={styles.label}>Health</Text>
+        <Switch value={health} onValueChange={setHealth} />
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <Button title="Next" onPress={handleNext} />
+      </View>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#f1f0eb',
-    },
-    text: {
-      fontSize: 18,
-      color: '#333',
-    },
-  });
-  
+  container: {
+    flex: 1,
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    backgroundColor: '#f1f0eb',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    alignSelf: 'center',
+    color: '#333',
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 18,
+    color: '#333',
+  },
+  buttonContainer: {
+    marginTop: 30,
+    marginBottom: 40,
+  },
+});
