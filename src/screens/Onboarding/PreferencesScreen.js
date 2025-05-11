@@ -1,42 +1,72 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch, Button } from 'react-native';
-import { useAuth } from '../../../AuthProvider'; // Access context
+import { View, Text, StyleSheet, Switch, Button, Alert } from 'react-native';
+import { useAuth } from '../../../AuthProvider';
+import { getFirestore, doc, updateDoc } from 'firebase/firestore';
+
+const db = getFirestore();
 
 export default function PreferencesScreen({ navigation }) {
-  const [tech, setTech] = useState(false);
-  const [health, setHealth] = useState(false);
-  const { setPreferencesSet } = useAuth(); // Accessing setPreferencesSet from context
+  const { user, setPreferencesSet } = useAuth();
 
-  const getSelectedInterests = () => {
-    const interests = [];
-    if (tech) interests.push('Tech');
-    if (health) interests.push('Health');
-    return interests;
+  const [fiction, setFiction] = useState(false);
+  const [mystery, setMystery] = useState(false);
+  const [scifi, setScifi] = useState(false);
+  const [nonfiction, setNonfiction] = useState(false);
+  const [thriller, setThriller] = useState(false);
+  const [fantasy, setFantasy] = useState(false);
+  const [history, setHistory] = useState(false);
+  const [health, setHealth] = useState(false);
+
+  const getSelectedGenres = () => {
+    const genres = [];
+    if (fiction) genres.push('Fiction');
+    if (mystery) genres.push('Mystery');
+    if (scifi) genres.push('Science fiction');
+    if (nonfiction) genres.push('Non-fiction');
+    if (thriller) genres.push('Thriller');
+    if (fantasy) genres.push('Fantasy');
+    if (history) genres.push('History');
+    if (health) genres.push('Health');
+    return genres;
   };
 
-  const handleNext = () => {
-    const selectedInterests = getSelectedInterests();
-    console.log('Selected interests:', selectedInterests);
+  const handleNext = async () => {
+    const selectedGenres = getSelectedGenres();
+    console.log('Selected genres:', selectedGenres);
 
-    // Save interests to backend or storage if needed...
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, {
+        genrePreferences: selectedGenres,
+      });
 
-    // ✅ Set preferences as complete
-    setPreferencesSet(true); // Update context to mark preferences as set
+      setPreferencesSet(true);
+      navigation.navigate('FeedScreen'); // optionally navigate to next screen
+    } catch (error) {
+      console.error('Failed to save preferences:', error);
+      Alert.alert('Error', 'Failed to save your preferences.');
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>What's your interest?</Text>
+      <Text style={styles.header}>What genres do you like?</Text>
 
-      <View style={styles.switchContainer}>
-        <Text style={styles.label}>Tech</Text>
-        <Switch value={tech} onValueChange={setTech} />
-      </View>
-
-      <View style={styles.switchContainer}>
-        <Text style={styles.label}>Health</Text>
-        <Switch value={health} onValueChange={setHealth} />
-      </View>
+      {[
+        ['Fiction', fiction, setFiction],
+        ['Mystery', mystery, setMystery],
+        ['Science fiction', scifi, setScifi],
+        ['Non-fiction', nonfiction, setNonfiction],
+        ['Thriller', thriller, setThriller],
+        ['Fantasy', fantasy, setFantasy],
+        ['History', history, setHistory],
+        ['Health', health, setHealth],
+      ].map(([label, value, setter]) => (
+        <View style={styles.switchContainer} key={label}>
+          <Text style={styles.label}>{label}</Text>
+          <Switch value={value} onValueChange={setter} />
+        </View>
+      ))}
 
       <View style={styles.buttonContainer}>
         <Button title="Next" onPress={handleNext} />
