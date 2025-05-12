@@ -41,7 +41,7 @@ export default function PreferencesScreen({ navigation }) {
       });
 
       setPreferencesSet(true);
-      navigation.navigate('FeedScreen'); // optionally navigate to next screen
+      console.log('Set preferences.');
     } catch (error) {
       console.error('Failed to save preferences:', error);
       Alert.alert('Error', 'Failed to save your preferences.');

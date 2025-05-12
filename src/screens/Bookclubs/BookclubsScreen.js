@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { useAuth } from '../../../AuthProvider';
 
 const db = getFirestore();
@@ -11,9 +11,9 @@ export default function BookclubsScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchBookclubs = async () => {
+    const unsubscribe = onSnapshot(collection(db, 'bookclubs'), async (bookclubsSnapshot) => {
+      setLoading(true); // Set loading to true when starting the snapshot fetch
       try {
-        const bookclubsSnapshot = await getDocs(collection(db, 'bookclubs'));
         const bookclubsData = [];
 
         for (const bookclubDoc of bookclubsSnapshot.docs) {
@@ -45,12 +45,13 @@ export default function BookclubsScreen({ navigation }) {
       } catch (error) {
         console.error('Error fetching bookclubs:', error);
       } finally {
-        setLoading(false);
+        setLoading(false); // Set loading to false when done fetching
       }
-    };
+    });
 
-    fetchBookclubs();
-  }, []);
+    // Cleanup the listener on unmount
+    return () => unsubscribe();
+  }, [user.uid]); // Re-run the effect when the user UID changes
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
@@ -61,6 +62,7 @@ export default function BookclubsScreen({ navigation }) {
         style={styles.viewDetails}
         onPress={() => navigation.navigate('BookclubHome', { bookClubId: item.id })}
       >
+        View Details
       </Text>
     </View>
   );

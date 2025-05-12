@@ -18,6 +18,7 @@ export default function AppNavigator() {
     );
   }
 
+  // Once initialized
   return (
     <NavigationContainer>
       {!user ? (
@@ -30,3 +31,4 @@ export default function AppNavigator() {
     </NavigationContainer>
   );
 }
+

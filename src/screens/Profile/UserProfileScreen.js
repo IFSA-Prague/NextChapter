@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import PFP from '../../assets/PFP.jpg';  
 
 const auth = getAuth();
 const db = getFirestore();
 
 export default function UserProfileScreen({ navigation }) {
   const [bookClubs, setBookClubs] = useState([]);
-  const user = auth.currentUser;
+  const user = auth.curresntUser;
 
   useEffect(() => {
     const fetchBookClubs = async () => {
@@ -26,54 +27,18 @@ export default function UserProfileScreen({ navigation }) {
     fetchBookClubs();
   }, [user]);
 
-  const handleBookClubPress = (club) => {
-    // Handle the button press, e.g., navigate to a specific book club screen
-    console.log(`Navigating to ${club}`);
-    // You can use navigation.navigate('BookClubScreen', { club }) if you have such a screen
-  };
-
-  const handleFindNextChapter = () => {
-    // Navigate to the onboarding screen if no book clubs
-    navigation.navigate('Intro');
-  };
-
   return (
     <View style={styles.container}>
       {/* User Profile Picture */}
-      <Image 
-        source={{ uri: user?.photoURL || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&s=120' }} 
+
+      <Image
+        source={PFP}
         style={styles.profileImage}
       />
 
       {/* User Name */}
-      <Text style={styles.userName}>{user?.displayName || 'User Name'}</Text>
-
-      {/* Book Clubs */}
-      <Text style={styles.bookClubsTitle}>Book Clubs I'm In:</Text>
-
-      {bookClubs.length > 0 ? (
-        // Show the list of book clubs if there are any
-        bookClubs.map((club, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.clubButton}
-            onPress={() => handleBookClubPress(club)}
-          >
-            <Text style={styles.clubButtonText}>{club}</Text>
-          </TouchableOpacity>
-        ))
-      ) : (
-        // If no book clubs, show this message and button
-        <View style={styles.noBookClubsContainer}>
-          <Text style={styles.noBookClubsText}>
-            Hi {user?.displayName || 'User'}, you're not in any bookclubs yet! Let's get you started.
-          </Text>
-          <TouchableOpacity 
-            style={styles.findNextChapterButton} onPress={handleFindNextChapter}>
-            <Text style={styles.findNextChapterButtonText}>Find my next chapter</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <Text style={styles.userName}>Hello {user?.displayName}!</Text>
+      
     </View>
   );
 }
