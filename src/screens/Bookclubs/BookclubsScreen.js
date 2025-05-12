@@ -62,7 +62,7 @@ export default function BookclubsScreen({ navigation }) {
         style={styles.viewDetails}
         onPress={() => navigation.navigate('BookclubHome', { bookClubId: item.id })}
       >
-        View Details
+        View Club!
       </Text>
     </View>
   );
@@ -94,32 +94,38 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
     margin: 16,
-    padding: 16,
-    borderRadius: 8,
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 4,
-    shadowOpacity: 0.1,
-    elevation: 2,
+    padding: 20,
+    borderRadius: 12,
+    shadowColor: 'rgba(0, 0, 0, 0.2)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    shadowOpacity: 0.15,
+    elevation: 5,
+    marginBottom: 18,
   },
   cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
   },
   cardDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
+    fontSize: 15,
+    color: '#555',
+    lineHeight: 20,
+    marginBottom: 12,
   },
   bookTitle: {
     fontSize: 16,
     color: '#6200ee',
-    marginTop: 8,
+    marginBottom: 12,
+    fontWeight: '500',
   },
   viewDetails: {
     fontSize: 14,
     color: '#6200ee',
-    marginTop: 12,
+    fontWeight: 'bold',
     textDecorationLine: 'underline',
+    marginTop: 10,
   },
 });

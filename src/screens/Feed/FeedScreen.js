@@ -8,7 +8,8 @@ import {
   getDocs,
   collection,
   updateDoc,
-  arrayUnion
+  arrayUnion,
+  increment
 } from 'firebase/firestore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -92,6 +93,7 @@ export default function FeedScreen({ navigation }) {
                 await Promise.all([
                   updateDoc(clubRef, {
                     members: arrayUnion(user.uid),
+                    membersCount: increment(1),
                   }),
                   updateDoc(userRef, {
                     joinedClubs: arrayUnion(clubId),
@@ -110,7 +112,7 @@ export default function FeedScreen({ navigation }) {
         { cancelable: true }
       );
     } else {
-      navigation.navigate('BookclubHomeScreen', { bookClubId: clubId });
+      Alert.alert("You are already a member of that club!");
     }
   };
 

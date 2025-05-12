@@ -41,7 +41,7 @@ export default function SignUpScreen({ navigation }) {
       });
   
       navigation.navigate('Onboarding'); // navigate to OnboardingStack component
-      Alert.alert('Success', 'Account created!');
+      // Alert.alert('Success', 'Account created!');
 
     } catch (error) {
       console.error('Error during sign-up:', error.code, error.message);

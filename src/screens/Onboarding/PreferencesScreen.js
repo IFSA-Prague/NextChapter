@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, Switch, Button, Alert, TouchableOpacity} from 'react-native';
 import { useAuth } from '../../../AuthProvider';
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 
@@ -69,7 +69,9 @@ export default function PreferencesScreen({ navigation }) {
       ))}
 
       <View style={styles.buttonContainer}>
-        <Button title="Next" onPress={handleNext} />
+         <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+            <Text style={styles.nextButtonText}>Next</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -103,4 +105,16 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 40,
   },
+  nextButton: {
+    backgroundColor: 'black',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  nextButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold'
+  }
 });
