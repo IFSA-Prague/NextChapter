@@ -2,11 +2,9 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import OnboardingScreen from '../screens/Onboarding/OnboardingScreen';
 import PreferencesScreen from '../screens/Onboarding/PreferencesScreen';
+import BookSearchScreen from '../screens/Onboarding/BookSearchScreen';
 
 const Stack = createNativeStackNavigator();
-
-// although the onboarding stack is currently quite short, it's nice to have it 
-// in case we want to expand and ask for more preferences from the user
 
 export default function OnboardingStack() {
   return (
@@ -18,7 +16,11 @@ export default function OnboardingStack() {
       <Stack.Screen 
         name="Preferences" 
         component={PreferencesScreen} 
-      /> 
+      />
+      <Stack.Screen
+        name="BookSearch"
+        component={BookSearchScreen}
+      />
     </Stack.Navigator>
   );
 }

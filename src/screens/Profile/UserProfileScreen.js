@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import PFP from '../../assets/PFP.jpg';  
+import PFP from '../../assets/PFP.jpg';
 
 const auth = getAuth();
 const db = getFirestore();
 
 export default function UserProfileScreen({ navigation }) {
   const [bookClubs, setBookClubs] = useState([]);
-  const user = auth.curresntUser;
+  const [favoriteAuthors, setFavoriteAuthors] = useState([]);
+  const [favoriteGenres, setFavoriteGenres] = useState([]);
+  const [favoriteBooks, setFavoriteBooks] = useState([]);
+  const user = auth.currentUser;
 
   useEffect(() => {
-    const fetchBookClubs = async () => {
+    const fetchUserData = async () => {
       if (user) {
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
@@ -20,34 +23,42 @@ export default function UserProfileScreen({ navigation }) {
         if (userDoc.exists()) {
           const userData = userDoc.data();
           setBookClubs(userData.bookClubs || []);
+          setFavoriteAuthors(userData.authorPreferences || []);
+          setFavoriteGenres(userData.genrePreferences || []);
+          setFavoriteBooks(userData.bookPreferences || []);
         }
       }
     };
 
-    fetchBookClubs();
+    fetchUserData();
   }, [user]);
 
   return (
-    <View style={styles.container}>
-      {/* User Profile Picture */}
-
-      <Image
-        source={PFP}
-        style={styles.profileImage}
-      />
-
-      {/* User Name */}
+    <ScrollView style={styles.container}>
+      <Image source={PFP} style={styles.profileImage} />
       <Text style={styles.userName}>Hello {user?.displayName}!</Text>
-      
-    </View>
+
+      <Text style={styles.sectionTitle}>Favorite Authors</Text>
+      {favoriteAuthors.map((author, index) => (
+        <Text key={index} style={styles.itemText}>{author}</Text>
+      ))}
+
+      <Text style={styles.sectionTitle}>Favorite Genres</Text>
+      {favoriteGenres.map((genre, index) => (
+        <Text key={index} style={styles.itemText}>{genre}</Text>
+      ))}
+
+      <Text style={styles.sectionTitle}>Favorite Books</Text>
+      {favoriteBooks.map((book, index) => (
+        <Text key={index} style={styles.itemText}>{book}</Text>
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
     backgroundColor: '#f1f0eb',
     padding: 20,
   },
@@ -55,48 +66,26 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
+    alignSelf: 'center',
     marginBottom: 20,
   },
   userName: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 10,
+    alignSelf: 'center',
+    marginBottom: 20,
   },
-  bookClubsTitle: {
+  sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 10,
-  },
-  clubButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  clubButtonText: {
-    fontSize: 18,
-    color: '#fff',
-  },
-  noBookClubsContainer: {
-    alignItems: 'center',
     marginTop: 20,
+    marginBottom: 10,
   },
-  noBookClubsText: {
-    fontSize: 18,
-    color: '#333',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  findNextChapterButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
-  },
-  findNextChapterButtonText: {
-    fontSize: 18,
-    color: '#fff',
+  itemText: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 5,
   },
 });
-

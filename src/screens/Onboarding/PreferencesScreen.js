@@ -6,7 +6,7 @@ import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 const db = getFirestore();
 
 export default function PreferencesScreen({ navigation }) {
-  const { user, setPreferencesSet } = useAuth();
+  const { user } = useAuth();
 
   const [fiction, setFiction] = useState(false);
   const [mystery, setMystery] = useState(false);
@@ -40,8 +40,8 @@ export default function PreferencesScreen({ navigation }) {
         genrePreferences: selectedGenres,
       });
 
-      setPreferencesSet(true);
       console.log('Set preferences.');
+      navigation.navigate('BookSearch');
     } catch (error) {
       console.error('Failed to save preferences:', error);
       Alert.alert('Error', 'Failed to save your preferences.');
